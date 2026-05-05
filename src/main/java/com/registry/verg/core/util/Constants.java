@@ -72,6 +72,13 @@ public class Constants{
 
 
 
+
+
+    // Farmer Specific Constants
+    public static final String FARMER_VALIDATION_FILE_JSON = "/payloadValidation/farmerPayloadValidation.json";
+    public static final String FARMER_ID_RQST = "farmerId";
+    public static final String FARMER_INDEX_NAME = "farmer_index";
+
     private Constants() {
     }
 }
