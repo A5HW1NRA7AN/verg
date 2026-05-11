@@ -1,10 +1,12 @@
-HELP.md
+### Java / Maven / Spring Boot ###
 target/
-.mvn/wrapper/maven-wrapper.jar
+**/target/
+!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+### IDEs ###
+# STS
 .apt_generated
 .classpath
 .factorypath
@@ -13,27 +15,34 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
+# IntelliJ IDEA
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
 
-### NetBeans ###
+# NetBeans
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 build/
+**/build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+# VS Code
 .vscode/
 
 ### OS Files ###
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 desktop.ini
 *.swp
@@ -54,7 +63,42 @@ tests/output/
 ### AI Tooling ###
 .gemini/
 .kiro/
+.cursor/
 
-
-### sample data ###
+### App Specific ###
 data.json
+
+### Terraform & Telephony Infra ###
+# Local .terraform directories
+**/.terraform/*
+.terraform/
+.terraform.lock.hcl
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files
+*.tfvars
+*.tfvars.json
+
+# Ignore override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore tfplan
+*tfplan*
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Telephony specific and any keys
+telephony/infra/*.pem
+*.pem

@@ -38,18 +38,26 @@ Since the server is running in an AWS VPC, it is behind a NAT.
    - Match (Permit): Paste Twilio's IP ranges: `54.172.60.0/30, 54.244.51.0/30, 54.171.127.192/30, 35.156.191.128/30, 54.65.63.192/30, 54.169.127.128/30, 54.252.254.64/30, 177.71.206.192/30`
 6. Click **Submit** and **Apply Config**.
 
-## 5. Install Custom Dialplan
-1. Open the `extensions_custom.conf` file provided in this repository.
-2. Update the `http://verg-backend.local:8080` placeholder to point to your VERG server (use Ngrok or Tailscale if VERG is running on your local machine).
-3. SSH into your Asterisk server.
-4. Edit the custom extensions file:
+## 5. Install custom dialplan + AMI manager for VERG
+
+### 5a. Dialplan (`extensions_custom.conf`)
+
+1. Open `telephony/extensions_custom.conf` in this repository (call flow only; no HTTP webhook required for the default path).
+2. SSH into your Asterisk server and edit:
    ```bash
    nano /etc/asterisk/extensions_custom.conf
    ```
-5. Paste the content of `extensions_custom.conf` and save the file (`Ctrl+X`, `Y`, `Enter`).
-6. Reload the Asterisk dialplan:
+3. Paste the file contents, add the **custom/atc-greeting** audio under `/var/lib/asterisk/sounds/custom/` if needed, save, then:
    ```bash
    asterisk -rx "dialplan reload"
    ```
 
-You are now ready to make a test call to your Twilio number and see the JSON payload appear in your VERG backend!
+### 5b. Asterisk Manager (AMI) for VERG
+
+1. Create a **dedicated manager user** with **read** access and **permit** only the IP address from which VERG will connect (see **[AMI_SETUP.md](AMI_SETUP.md)**).
+2. On AWS, allow **TCP 5038** from that VERG source IP to this instance (or use VPN / stunnel; avoid exposing 5038 to `0.0.0.0/0`).
+3. In VERG, set `telephony.ami.enabled=true` and `telephony.ami.host` / credentials to match this PBX.
+
+You can now place a test call and verify rows in Postgres table **`telephony_call_lead_ingest_log`** and optional POST to **`telephony.lead-registry.url`**.
+
+For moving from Twilio POC to a production carrier later, see **[CARRIER_PORTABILITY.md](CARRIER_PORTABILITY.md)**.

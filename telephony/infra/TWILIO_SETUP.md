@@ -43,7 +43,7 @@ Once your EC2 instance is running and FreePBX is installed, we need to tell Free
 
 Click **Submit** and then **Apply Config**.
 
-## 3. Applying the Dialplan Webhook
+## 3. Applying the dialplan (call flow)
 
 1. SSH into your FreePBX EC2 instance:
    ```bash
@@ -54,20 +54,28 @@ Click **Submit** and then **Apply Config**.
    nano /etc/asterisk/extensions_custom.conf
    ```
 3. Paste the contents of `telephony/extensions_custom.conf` (from this repository) into the file.
-4. Make sure to update the `VERG_URL` line to point to your actual VERG server URL!
+4. Ensure the **greeting** file exists at `custom/atc-greeting` in Asterisk sounds (upload via FreePBX **Admin → File Store** or place under `/var/lib/asterisk/sounds/custom/`).
 5. Save the file (`Ctrl+X`, then `Y`, then `Enter`).
-6. Reload the dialplan into Asterisk memory:
+6. Reload the dialplan:
    ```bash
    asterisk -rx "dialplan reload"
    ```
 
-## 4. Test the System!
+## 4. telephony-service: AMI ingest (recommended)
 
-1. Start your VERG server locally.
-2. Call your Twilio phone number from your cell phone.
-3. You should hear it ring for 2 seconds, then abruptly hang up.
-4. Check your VERG server logs—you should see the JSON payload arrive!
-5. To see the Asterisk logs live as the call happens, run:
+Leads are created when `telephony-service` receives **AMI Hangup** events for context `from-twilio-missed-call`. Configure `telephony-service` to connect to the PBX manager port and enable the client:
+
+- Follow **[AMI_SETUP.md](AMI_SETUP.md)** (`telephony.ami.*`, `telephony.lead-context-allowlist`, optional `telephony.lead-registry.url`).
+
+**POC note:** Twilio free trial / trial accounts are fine for SIP + DID testing; for production you may move DIDs and trunks to another carrier without changing the AMI-based Java pipeline — see **[CARRIER_PORTABILITY.md](CARRIER_PORTABILITY.md)**.
+
+## 5. Test the system
+
+1. Start VERG with AMI enabled and correct `telephony.ami.*` credentials.
+2. Call your Twilio number from a mobile phone.
+3. You should hear ringing, then the greeting, then hangup.
+4. In VERG logs, confirm AMI connection and ingest; in Postgres, check table `telephony_call_lead_ingest_log`.
+5. For live Asterisk CLI:
    ```bash
    asterisk -rvvv
    ```

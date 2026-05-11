@@ -60,6 +60,10 @@ public class Constants{
     public static final String SAMPLE_ID_RQST = "sampleId";
     public static final String INTEREST_INDEX_NAME = "sampleIndex";
 
+    public static final String CROP_VALIDATION_FILE_JSON = "/payloadValidation/cropPayloadValidation.json";
+    public static final String CROP_ID_RQST = "cropId";
+    public static final String CROP_INDEX_NAME = "crop_index";
+
         private Constants() {
     }
 }
